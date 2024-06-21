@@ -11,7 +11,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.ActiveProfiles;
-
+import static org.assertj.core.api.Assertions.assertThat;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -44,7 +44,22 @@ class MedicoRepositoryTest {
 
         var medicoLibre = medicoRepository.seleccionarMedicoConEspecialidadEnFecha(Especialidad.CARDIOLOGIA, proximoLunes10H);
 
-        assertNull(medicoLibre);
+        assertThat(medicoLibre).isNull();
+    }
+
+    @Test
+    @DisplayName("deberia retornar un medico cuando realize la consulta en la base de datos")
+    void seleccionarMedicoConEspecialidadEnFechaEscenario2() {
+
+        var proximoLunes10H = LocalDate.now()
+                .with(TemporalAdjusters.next(DayOfWeek.MONDAY))
+                .atTime(10,0);
+
+        var medico=registrarMedico("Jose","j@mail.com","123456",Especialidad.CARDIOLOGIA);
+
+        var medicoLibre = medicoRepository.seleccionarMedicoConEspecialidadEnFecha(Especialidad.CARDIOLOGIA, proximoLunes10H);
+
+        assertThat(medicoLibre).isEqualTo(medico);
     }
 
     private void registrarConsulta(Medico medico, Paciente paciente, LocalDateTime fecha) {

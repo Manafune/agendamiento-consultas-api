@@ -8,6 +8,7 @@ import med.voll.api.domain.consulta.AgendaDeConsultaService;
 import med.voll.api.domain.consulta.DatosAgendarConsulta;
 import med.voll.api.domain.consulta.DatosCancelamientoConsulta;
 import med.voll.api.domain.consulta.DatosDetalleConsulta;
+import med.voll.api.infra.errores.ValidacionDeIntregridad;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,9 +29,8 @@ public class ConsultaController {
             description = "",
             tags = {"consultas"}
     )
-    public ResponseEntity agendar(@RequestBody @Valid DatosAgendarConsulta datos){
+    public ResponseEntity agendar(@RequestBody @Valid DatosAgendarConsulta datos) throws ValidacionDeIntregridad {
         var response = service.agendar(datos);
-
         return ResponseEntity.ok(response);
     }
 
